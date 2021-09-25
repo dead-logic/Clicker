@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gma.System.MouseKeyHook;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -23,9 +24,13 @@ namespace Clicker
 
         bool clickerActivated = false;
         bool clickerEnabled = true;
+
+        private IKeyboardMouseEvents m_GlobalHook;
+
         public Form1()
         {
             InitializeComponent();
+            Subscribe();
 
             textBox3.Text = Properties.Settings.Default.startChar.ToString();
             checkBox1.Checked = Properties.Settings.Default.rightClick;
@@ -127,27 +132,6 @@ namespace Clicker
             }
         }
 
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-            textBox3.Text = textBox3.Text.ToUpper();
-            if(textBox3.Text != Properties.Settings.Default.startChar.ToString())
-            {
-                if(textBox3.Text.Length > 0)
-                {
-                    label4.Text = "Restart App for\nChange to Take Effect";
-                    clickerEnabled = false;
-                }
-            }
-            else
-            {
-                if (textBox3.Text.Length > 0)
-                {
-                    label4.Text = "Clicker Not Running";
-                    clickerEnabled = true;
-                }
-            }
-        }
-
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (textBox3.Text.Length > 0)
@@ -186,6 +170,38 @@ namespace Clicker
             catch
             {
                 textBox2.Text = Properties.Settings.Default.rightClickDef.ToString();
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        public void Subscribe()
+        {
+            m_GlobalHook = Hook.GlobalEvents();
+            m_GlobalHook.KeyPress += GlobalHookKeyPress;
+        }
+
+        private void GlobalHookKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Properties.Settings.Default.startChar.ToString().ToLower().ToCharArray()[0])
+                ClickerFunc();
+        }
+
+        public void Unsubscribe()
+        {
+            m_GlobalHook.KeyPress -= GlobalHookKeyPress;
+            m_GlobalHook.Dispose();
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            textBox3.Text = textBox3.Text.ToUpper();
+            if(textBox3.Text.Length > 0)
+            {
+                Properties.Settings.Default.startChar = textBox3.Text.ToLower().ToCharArray()[0];
             }
         }
     }
