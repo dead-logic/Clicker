@@ -24,6 +24,7 @@ namespace Clicker
 
         bool clickerActivated = false;
         bool clickerEnabled = true;
+        int mode = 1;
 
         private IKeyboardMouseEvents m_GlobalHook;
 
@@ -36,11 +37,35 @@ namespace Clicker
             checkBox1.Checked = Properties.Settings.Default.rightClick;
             textBox1.Text = Properties.Settings.Default.leftClickDef.ToString();
             textBox2.Text = Properties.Settings.Default.rightClickDef.ToString();
+            textBox4.Text = Properties.Settings.Default.cps.ToString();
 
             GlobalHotKey.RegisterHotKey("Alt + " + Properties.Settings.Default.startChar, () => ClickerFunc());
             GlobalHotKey.RegisterHotKey("Alt + C", () => Application.Exit());
 
             textBox3.MaxLength = 1;
+
+            if (Properties.Settings.Default.mode == 1)
+            {
+                label2.Visible = false;
+                label3.Visible = false;
+                label5.Visible = false;
+                label7.Visible = true;
+                textBox1.Visible = false;
+                textBox2.Visible = false;
+                textBox4.Visible = true;
+                mode = 2;
+            }
+            else
+            {
+                label2.Visible = true;
+                label3.Visible = true;
+                label5.Visible = true;
+                label7.Visible = false;
+                textBox1.Visible = true;
+                textBox2.Visible = true;
+                textBox4.Visible = false;
+                mode = 1;
+            }
         }
 
         public void ClickerFunc()
@@ -87,28 +112,60 @@ namespace Clicker
             {
                 if(checkBox1.Checked)
                 {
-                    if (textBox1.Text == textBox2.Text)
+                    if(mode == 2)
                     {
-                        Thread.Sleep(new Random().Next(Convert.ToInt32(textBox1.Text)));
-                        DoMouseClick(true);
+                        if (textBox1.Text == textBox2.Text)
+                        {
+                            Thread.Sleep(new Random().Next(1000 / Convert.ToInt32(textBox4.Text)));
+                            DoMouseClick(true);
+                        }
+                        else
+                        {
+                            Thread.Sleep(new Random().Next(1000 / Convert.ToInt32(textBox4.Text)));
+                            DoMouseClick(true);
+                        }
                     }
                     else
                     {
-                        Thread.Sleep(new Random().Next(Convert.ToInt32(textBox1.Text), Convert.ToInt32(textBox2.Text)));
-                        DoMouseClick(true);
+                        if (textBox1.Text == textBox2.Text)
+                        {
+                            Thread.Sleep(new Random().Next(Convert.ToInt32(textBox1.Text)));
+                            DoMouseClick(true);
+                        }
+                        else
+                        {
+                            Thread.Sleep(new Random().Next(Convert.ToInt32(textBox1.Text), Convert.ToInt32(textBox2.Text)));
+                            DoMouseClick(true);
+                        }
                     }
                 }
                 else
                 {
-                    if (textBox1.Text == textBox2.Text)
+                    if (mode == 2)
                     {
-                        Thread.Sleep(new Random().Next(Convert.ToInt32(textBox1.Text)));
-                        DoMouseClick(false);
+                        if (textBox1.Text == textBox2.Text)
+                        {
+                            Thread.Sleep(new Random().Next(1000 / Convert.ToInt32(textBox4.Text)));
+                            DoMouseClick(false);
+                        }
+                        else
+                        {
+                            Thread.Sleep(new Random().Next(1000 / Convert.ToInt32(textBox4.Text)));
+                            DoMouseClick(false);
+                        }
                     }
                     else
                     {
-                        Thread.Sleep(new Random().Next(Convert.ToInt32(textBox1.Text), Convert.ToInt32(textBox2.Text)));
-                        DoMouseClick(false);
+                        if (textBox1.Text == textBox2.Text)
+                        {
+                            Thread.Sleep(new Random().Next(Convert.ToInt32(textBox1.Text)));
+                            DoMouseClick(false);
+                        }
+                        else
+                        {
+                            Thread.Sleep(new Random().Next(Convert.ToInt32(textBox1.Text), Convert.ToInt32(textBox2.Text)));
+                            DoMouseClick(false);
+                        }
                     }
                 }
             }
@@ -202,6 +259,47 @@ namespace Clicker
             if(textBox3.Text.Length > 0)
             {
                 Properties.Settings.Default.startChar = textBox3.Text.ToLower().ToCharArray()[0];
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if(mode == 1)
+            {
+                label2.Visible = false;
+                label3.Visible = false;
+                label5.Visible = false;
+                label7.Visible = true;
+                textBox1.Visible = false;
+                textBox2.Visible = false;
+                textBox4.Visible = true;
+                mode = 2;
+            }
+            else
+            {
+                label2.Visible = true;
+                label3.Visible = true;
+                label5.Visible = true;
+                label7.Visible = false;
+                textBox1.Visible = true;
+                textBox2.Visible = true;
+                textBox4.Visible = false;
+                mode = 1;
+            }
+            Properties.Settings.Default.mode = mode;
+            Properties.Settings.Default.Save();
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Properties.Settings.Default.cps = Convert.ToInt32(textBox4.Text);
+                Properties.Settings.Default.Save();
+            }
+            catch
+            {
+                textBox4.Text = Properties.Settings.Default.cps.ToString();
             }
         }
     }

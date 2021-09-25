@@ -70,5 +70,29 @@ namespace Clicker.Properties {
                 this["rightClickDef"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int mode {
+            get {
+                return ((int)(this["mode"]));
+            }
+            set {
+                this["mode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int cps {
+            get {
+                return ((int)(this["cps"]));
+            }
+            set {
+                this["cps"] = value;
+            }
+        }
     }
 }
